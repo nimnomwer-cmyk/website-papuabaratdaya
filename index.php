@@ -1,0 +1,818 @@
+<?php
+session_start();
+
+ini_set('display_errors', 0);
+error_reporting(E_ALL);
+
+header("X-Frame-Options: DENY");
+header("X-Content-Type-Options: nosniff");
+header("Referrer-Policy: no-referrer");
+
+header("
+Content-Security-Policy:
+default-src 'self';
+script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com;
+style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com;
+img-src 'self' data: https:;
+font-src 'self' https://cdnjs.cloudflare.com;
+");
+
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+?>
+
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <base target="_self">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wisata Papua Barat Daya </title>
+    <meta name="description" content="Jelajahi keindahan alam Papua Barat Daya dengan destinasi wisata terbaik di Sorong, Raja Ampat, Maybrat, dan Teminabuan.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#1e40af",
+                        secondary: "#0ea5e9",
+                        accent: "#3a549dff",
+                        dark: "#1e293b",
+                        light: "#080808ff"
+                    },
+                    fontFamily: {
+                        'poppins': ['Poppins', 'sans-serif'],
+                        'opensans': ['Open Sans', 'sans-serif']
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.8s ease-in-out',
+                        'slide-up': 'slideUp 0.6s ease-out'
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+        }
+        h1, h2, h3, h4 {
+            font-family: 'Poppins', sans-serif;
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #fbfbfcff 0%, #f6f7f8ff 100%);
+        }
+        .destination-section {
+            scroll-margin-top: 100px;
+        }
+        .booking-btn {
+            transition: all 0.3s ease;
+        }
+        .booking-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .image-hover {
+            transition: transform 0.5s ease;
+        }
+        .image-hover:hover {
+            transform: scale(1.03);
+        }
+            
+        .rating {
+        font-size: 24px;
+        cursor: pointer;
+        color: #ccc;
+        }
+
+        .rating span.active {
+        color: #ffc107;
+        }
+
+        .rating span:hover,
+        .rating span:hover ~ span {
+        color: #ffc107;
+        }
+        .rating {
+        font-size: 24px;
+        cursor: pointer;
+        color: #ccc;
+        }
+
+        .rating span.active {
+        color: #ffc107;
+        }
+
+        .rating span:hover,
+        .rating span:hover ~ span {
+        color: #ffc107;
+        }
+
+  </style>
+</head>
+
+    </style>
+</head>
+<body class="min-h-screen bg-gray-50 text-gray-800">
+    <!-- Header & Navigation -->
+    <header class="sticky top-0 z-50 bg-white shadow-md">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="flex items-center space-x-2 mb-4 md:mb-0">
+                    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+                        <i class="fas fa-mountain text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-primary">Papua Barat Daya</h1>
+                        <p class="text-sm text-gray-600">Wisata Alam Eksotis</p>
+                    </div>
+                </div>
+                
+                <nav class="w-full md:w-auto">
+                    <ul class="flex flex-wrap justify-center md:justify-end space-x-0 md:space-x-6 space-y-2 md:space-y-0">
+                        <li><a href="#home" class="block px-4 py-2 text-gray-700 hover:text-primary font-medium transition-colors duration-300">Beranda</a></li>
+                        <li><a href="#destinasi" class="block px-4 py-2 text-gray-700 hover:text-primary font-medium transition-colors duration-300">Destinasi</a></li>
+                        <li><a href="#tentang" class="block px-4 py-2 text-gray-700 hover:text-primary font-medium transition-colors duration-300">About</a></li>
+                        <li><a href="#kontak" class="block px-4 py-2 text-gray-700 hover:text-primary font-medium transition-colors duration-300">Kontak</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-gradient text-black py-16 md:py-24">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto text-center animate-fade-in">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6">Jelajahi Keindahan Papua Barat Daya</h2>
+                <p class="text-xl mb-8 opacity-90">Temukan pesona alam yang masih alami dan tempat bagus dan indah di empat destinasi utama: Sorong, Raja Ampat, Maybrat, dan Teminabuan.</p>
+                <a href="#destinasi" class="inline-block bg-accent text-white font-semibold px-8 py-3 rounded-full hover:bg-blue-500 transition-colors duration-300 booking-btn">Jelajahi Destinasi</a>
+            </div>
+        </div>
+    </section>
+
+            <!-- Main Content - Destinations -->
+            <main class="container mx-auto px-4 py-16 space-y-28" id="destinasi">
+
+        <!-- ================= SORONG ================= -->
+        <section class="grid md:grid-cols-2 gap-10 items-center">
+            <img src="https://asset.kompas.com/crops/MvmXUf2e8TdzfsNYaLxe4dMIo6w=/36x0:720x456/750x500/data/photo/2021/11/01/617fed94f0370.jpg"
+                class="rounded-2xl shadow-xl w-full h-[380px] object-cover">
+
+            <div>
+                <h2 class="text-3xl font-bold text-primary mb-3">Sorong</h2>
+                <p class="mb-4">
+                    Kota gerbang Papua Barat Daya yang menjadi pusat transportasi dan awal perjalanan menuju Raja Ampat.
+                </p>
+
+                <!-- Wisata -->
+                <div class="space-y-6">
+                    <!-- Wisata 1 -->
+                    <div class="flex gap-4">
+                        <img src="https://indonesiakaya.com/wp-content/uploads/2020/10/Pantai-Tanjung-Kasuar1-1200.jpg"
+                            class="w-28 h-20 rounded-lg object-cover">
+                        <div>
+                            <h4 class="font-semibold">Pantai Tanjung Kasuari</h4>
+                            <p class="text-sm">Pantai pasir putih cocok menikmati sunset.</p>
+                            <div class="rating">
+                            <span data-value="1">★</span>
+                            <span data-value="2">★</span>
+                            <span data-value="3">★</span>
+                            <span data-value="4">★</span>
+                            <span data-value="5">★</span>
+                            </div>
+                            <p id="rating-value"></p>
+
+                            <a href="https://maps.google.com/?q=Pantai+Tanjung+Kasuari+Sorong"
+                            target="_blank" class="text-sm text-blue-600">📍 Google Maps</a>
+                        </div>
+                    </div>
+
+                    <!-- Wisata 2 -->
+                    <div class="flex gap-4">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTaNgfvXLZDXF3N8PSOaT-mIBAKvevzMkVjJA&s"
+                            class="w-28 h-20 rounded-lg object-cover">
+                        <div>
+                            <h4 class="font-semibold">Pulau Doom</h4>
+                            <p class="text-sm">Pulau bersejarah dekat pusat kota Sorong.</p>
+                            <div class="rating">
+                            <span data-value="1">★</span>
+                            <span data-value="2">★</span>
+                            <span data-value="3">★</span>
+                            <span data-value="4">★</span>
+                            <span data-value="5">★</span>
+                            </div>
+                            <p id="rating-value"></p>
+
+                            <a href="https://maps.google.com/?q=Pulau+Doom+Sorong"
+                            target="_blank" class="text-sm text-blue-600">📍 Google Maps</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= RAJA AMPAT ================= -->
+        <section class="grid md:grid-cols-2 gap-10 items-center">
+            <div>
+                <h2 class="text-3xl font-bold text-primary mb-3">Raja Ampat</h2>
+                <p class="mb-4">
+                    Destinasi wisata bahari kelas dunia dengan keindahan bawah laut terbaik.
+                </p>
+
+                <div class="space-y-6">
+                    <div class="flex gap-4">
+                        <img src="https://lh3.googleusercontent.com/gps-cs-s/AG0ilSzJnKpWDcYQaMSnHdRO4rakOJVXIl-RYPHZ_YQXJwS2atqtH7lrhwPMTy5diLUnRRE19ZuXfNQe4XbJ7lthB1SBz1XCv7f4l8JvNibyN0sV1YqeRPPgumieBXt4SSVRDJGWjd8eqw=w408-h306-k-no"
+                            class="w-28 h-20 rounded-lg object-cover">
+                        <div>
+                            <h4 class="font-semibold">Wayag Islands</h4>
+                            <p class="text-sm">Ikon Raja Ampat dengan gugusan karst unik dan laguna biru jernih, menawarkan pemandangan spektakuler dari puncak bukit karangnya yang menantang untuk didaki.</p>
+                            <div class="rating">
+                            <span data-value="1">★</span>
+                            <span data-value="2">★</span>
+                            <span data-value="3">★</span>
+                            <span data-value="4">★</span>
+                            <span data-value="5">★</span>
+                            </div>
+                            <p id="rating-value"></p>
+
+                            <a href="https://maps.app.goo.gl/bquZYnmpPyMqQYn69"
+                            target="_blank" class="text-sm text-blue-600">📍 Google Maps</a>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <img src="https://asset.tribunnews.com/luNzL5KKa6ZszNOWrSGaxwHWoeE=/1200x675/filters:upscale():quality(30):format(webp):focal(0.5x0.5:0.5x0.5)/sorong/foto/bank/originals/20230321_Geosite-Piaynemo.jpg"
+                            class="w-28 h-20 rounded-lg object-cover">
+                        <div>
+                            <h4 class="font-semibold">Piaynemo</h4>
+                            <p class="text-sm">Pemandangan laguna dari puncak bukit, Piaynemo juga memiliki makna budaya bagi masyarakat setempat dan menjadi lokasi penting untuk pariwisata berbasis konservasi di Papua Barat. </p>
+                            <div class="rating">
+                                <span data-value="1">★</span>
+                                <span data-value="2">★</span>
+                                <span data-value="3">★</span>
+                                <span data-value="4">★</span>
+                                <span data-value="5">★</span>
+                                </div>
+                                <p id="rating-value"></p>
+
+                            <a href="https://maps.app.goo.gl/up7y6Soqu2otKBhm9"
+                            target="_blank" class="text-sm text-blue-600">📍 Google Maps</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/d6/a1/76/pemandangan-pulau2-kecil.jpg?w=800&h=-1&s=1"
+                class="rounded-2xl shadow-xl w-full h-[380px] object-cover">
+        </section>
+
+        <!-- ================= MAYBRAT ================= -->
+        <section class="grid md:grid-cols-2 gap-10 items-center">
+            <img src="data:image/jpeg;base64,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"
+                class="rounded-2xl shadow-xl w-full h-[380px] object-cover">
+
+            <div>
+                <h2 class="text-3xl font-bold text-primary mb-3">Maybrat</h2>
+                <p class="mb-4">
+                    Wilayah pegunungan dengan danau alami dan wisata budaya.
+                </p>
+        
+                <div class="space-y-6">
+                    <div class="flex gap-4">
+                        <img src="https://meramuda.com/wp-content/uploads/2023/10/Danau-framu-ayamuru2.jpg"
+                            class="w-28 h-20 rounded-lg object-cover">
+                        <div>
+                            <h4 class="font-semibold">Danau Ayamaru/ Karst</h4>
+                            <p class="text-sm">terkenal dengan airnya yang jernih, hutan karst unik, dan ikan pelangi endemik yang menjadi kekayaan pusaka lokal, menawarkan pemandangan menakjubkan dengan perahu sampan ikonik, aktivitas air seperti berenang, dan lanskap alam yang asri. </p>
+                            <div class="rating">
+                                <span data-value="1">★</span>
+                                <span data-value="2">★</span>
+                                <span data-value="3">★</span>
+                                <span data-value="4">★</span>
+                                <span data-value="5">★</span>
+                                </div>
+                                <p id="rating-value"></p>
+
+                            <a href="https://maps.app.goo.gl/at5nXsho9uu9kYFb7"
+                            target="_blank" class="text-sm text-blue-600">📍 Google Maps</a>
+                        </div>
+                        </div>
+
+                        <div class="flex gap-4">
+                              <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEhUTExMWFhUXGCIbGRgYGB4dIBogIh8aGxsbIB0eICggIB4lHxoeITEhJSorLi4uGh8zODMtNygtLisBCgoKDg0OGxAQGyslICUtLS0vLS0tLS0tLS8tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAMIBAwMBIgACEQEDEQH/xAAcAAACAgMBAQAAAAAAAAAAAAAEBQMGAAIHAQj/xABAEAACAQIEBAQEBAQEBQQDAAABAhEDIQAEEjEFQVFhEyJxgQYykaEjQrHwFFLB4RVi0fEHFjNygjSSosIkQ7L/xAAaAQADAQEBAQAAAAAAAAAAAAACAwQBAAUG/8QAKhEAAgICAgEDBAICAwAAAAAAAAECEQMhEjFBBDJREyIzYRSBcfEFQmL/2gAMAwEAAhEDEQA/AKFQ4DWqgmlRNQDcrsvQkm3L7YV/wpEnSy99Jsd/SP1xfODfHdChrprRMOZITYHaynBD8OzFQVAymleQHPnIMzYEr9du2JpT49D/AKFK72c1KibASLk3/wBsZrk9+4/THRj8FJVX8OsyLH5gDEG0lDp59o6HFT458MZig5Gksq7MoMEdT0PLGxmmDwYHQzCLRqK4lmjSZ2vvHPENFVYHnHP+/wB8Q1aLBgjoQzCQG3NuV8QrTIslybQO+2CoVKIwo5jS+hXblIHlnlG94n7nEgqqII1qy8x9N/3M4S1aTruCD9MT0EqsQApN94vflOOcAeJYsiGLxCzAhvlJmea/N08098FZrI0QWlxTcNYHaYPSQOs2HpiHhOXasWTRDgW08oLG694t3GAXyAd2YtDC/wCJO4gaTbcz8vY4VTbCqx5wzLKi+dkaWmQwII/7tjHT0OF9bUz+RVg3GhZne+3L+uH3wV8NUzTd6yl3dLIaZPhgXDqT+YiwPLvOLdwrgVOjamilhIBqE9LRAmJER27YU5qMh2ODX+Cm0eFuKRqsSFZZFifY2n6dRgNsswBlFGsWdmaTckaQTOw6cvbFo478SmnrpPl0NRbEyxpsOR0yGiNwTHrhx8LZo1VqeLladN6RFMMgnldRqHlI3IFvMBuMdySVsZUJaKnkqL1XNOpR8xsF8PSCApjzE9QRvz9Bhdls/UVly5kBXICBAF1GQAYkwCZPQQQLCL/n8gGUimkGTF7k877gE3sRt7YqB4fTytSahVmMeVpIJNiJPzAxGk73mwuCyxYjNH6e0G8Xq+HlPFSUL0woZwB+bzTNjIU2iQGJFpxXTm0CqHplagJquzAiQZCwBG4XvMAz0Oz/AMSJVDFhTKBPOjqSqnWFkAm5Oubz8uKXxbijVS7lizMRcHykLqUaRyEEWGwnB4IOS2idSc3bLBqq5qn4d9ZNuQIVSuhbfNcgCemJOLaU8smVhYAs4MEzfVPvEJHPFd4Xx1kVAWMIxM84gEAe6n64a53MtUyj1hRYTUH4pQkaQNEh9hJmeZI9MO4ST/QxX0TZeqn8QakLUGnyhyCFJEjpqgCYjnfB2lFSpXqljXM6LQqA+YE6Ta5kSPTFTyHG/CqVHv5lIHPcH0/NB/d40+JKopuhMlzJO03mO9746WOV2g9Fzy+cbM6CqaWAIFp76pJPmO4j7RhvxbhenLoqtBPlN7Xm1rcxfFb+H/iqlSp1WNNnbTLEQIEwF+p+n0x7Q4u2Y1VjUCMIjUOQ5CDub9bnEssWTl1SQSaSLFR+DK1WalV7n5QkDoAZ9OVsE5HhC02AWrNbZgbxyFuVv6YL4d8UrUoJIILGGKyIGxYn8oHWRgrMUjmBU/hgp1XqOpGoxuPRus3nEKnnlJxlobxVaKjx/QGUpEx5iOQsLdjsFFueDODqhqI8D8MF0BJ0rEKGJPIA7HnNpjG+a+Ea2k1W2EXEkzYAD+aFtPfESU0ZD/EMUpStOlSQjXWCnlJA0yCxc2nrGLmmocRWS0g7O5TMSGzdJSocaagcQRpncjSFMAkkiYgDCzM5kmKWVrpSCy1QSYiJuQLgzMSJHPAnxRnkpw7FCHVSlIv4gSJI33UAAdyY2BGEvCqmZKMwqpSDyxsJK2UKBBMcgAOnM4zHguKl/onSs3asi19dRzmarPciQpk3kmCFi1uWH3Ai0vVdZdjZoUkgRsCItEljJgrtMkSj8ONlwWDM8jz3ChF38xuZO0C+LpwTgQ8EeIQt9QUoRvuJN5tc2tt1w3J6iEEWQ0K6XjaV00QwgQWuTbv+nLGYdtkyLeKy/wCVZgemlgPoPrvjzCv5SG/VQZx74GSpR8PLCnSZWBB0c1MwTvFr74c5OuEIFULrH8rcriQANud9sbNxAxEtHX9NhOEueuxso6mSBB339cbPKtUao/I2z3CMqSHVTTqb+InkPUgkfMDzBmce/wCOUAp1OkC2qV/QYrlfTTWWdwB/nm08uZxz7ivEmSqxpglSf5iJPeYj64fFOfTETnxOmcQ+IMkwOtFfoBTMnlby/eccv47xHLyfCWqt/wAzD9DJ54CfjZBIJaNoEH9SRhU76jMGT1/2EYojifyIlmCK2fU7F29VT7/s4Gp52ryYj0MfpiWnSO22C6OX9MULGTSz0R5PO1NWpiW7EyPoZxtxNmrEFrgbCIA9AIAwbSyTiYKn/wAhbBX+HtpmVJ6A3/2xzwVsV/M8DP4S+KKq6KVQ2ACrAvAMXvG2LVT482ogkGDBuL3t9cc2bJ1AxOmPVSfrbDBK5VixKyY//WDHpruPXEWTBFuyqHqWWnjPE6rsdAFrQUJMjYg6bb4e/D/FGalBp6T5p28xJknkZvJkYqmV41TX5nYcwsCG9IMA9yce5X4lVSVpUqmqNqlREQcyZg9MJlitUkPhm3ZfF4soaGAUbbbffFA/4h5uXplQGMmSoPQ3372H3xYuDu1eHDUp56X3+q394wz/AIQaoqimp5EENJtcjYYVDE4uzc2RSVHDuIuwqMFpnSQsjT2UkTH804g4NwbMZyt4eXolnNyBZVE7kmwX1OOzvmMsmtqlNVUH5tCnVcXAAJieuJ+D/EuTpsVpOq6jJVFLExuCqrPPbvimGfxQGOC+QH4P/wCEdCky181U8ZtxTAAp69wNyWA6GAenLF7zvCfEgPZAfkiVi4gjpfEmQ4gjLbVvI8rqPoQPphjUzanlNuYO/vg39y2NWjjPxv8A8IqVOlUr5V3UquoUm8waPmUMbgxcAzt3xy7h/D6ZUvUe1tKruSb3NwsD99fqDieaLadSk7jSgmZtBxyr4g4JkqQYOFpFuYUdTHO5/vjVm8GOHkoeSy2XIdTUamh0jzeYtBBYwsew9MOX4fkDSCAuo5VA99XIspkQdrEAd8J6tHw6hVGFSmTvpifbbBz1kBGml8pm5mOgj1vOClfyL5Iko8Ho08yqDPVTTjzPTExJiYmI1QYE/XHRuChUUZSjXeoblqzKBfkukNeAOvT0xRPhnKUXZmrlk1WDBDpBNwS0jn2jvh3wzhq0RWqp86qyoytMapvNxO2/fCp0xmN+R18TcUqR4JcQikFto3HKfN+knphHwLglOrTNapWpslRNKJZqiGPMNTEQVsYMi4NsVirmAKaU5ICjzQOfPvO18LnKEzEEfKN/WSf3fASg2qTMm+Qy+N8kKJpHzl3BYalACrMBQASJ22mPfEPw6ACr1hIU+XUTEzMn+YCDbmYGBXy5cqXcmBYFrAX67DoBgvivEafhIlMtK9QIEcwZvO+3S55MUXwUTIqi0f4xSVkAiWqSSQOUXO9gdl5ROM4v8YqXqUdFaoS4VRTYKCv5pJDMZ5CIjFH4AzmqapkqgMkiethyHfpPfDPIZk1KVWadMhCX11AIvYADQTy5G9tuav40FK3sGTbHHEs4tSozJVoIpNlcsSItchI5Y9xWFrgAA1KsgX88X5+2Mwf0IfANHY2r5h4JoKGB/N+5wNV4hXDFWNJT0vzmJtHLnjziPx6lNNRSrHKFAn0vI98V7M/8UZWKeWW/Oown1MAye0e+J1jlLpFs5pEPxJw3Ml9bsTTA6xfeNJ5emK7QyUtDUxqOwIC797YN/wCbHYOagS5ndjpkQdIJAv6Yq1GuheQkidpIjvbFmJSSpkeSntHTOBfD2Temz1qVKmwMT47G/OVJgexwFm+ABVDB8vUSYAUANy7X+pxW6MmyI5gXgD3ucHUa9RrM7raPMTbla8WH75YY5SRHJX5GtbgKzBpbWMlrdo1W9/0x4eDU/lAInp9oiT98C54TUFU1mUqoAIttcEmIO+JT8QoDqAqdJWNJblYx9oxsZN+REoS8A9ThISZLkdAD/eMaUFuSsAK0EMwB9RC3HfthlkOPGuSKKkkRIY6YH81pn68sMM7my+oMFUgaYIsQR3tHLngJ5X0zlHj2hTXztoSGkWBJX2kzhVQzdbXDLAJgWYr3+WfrbD3LaW2QGxBMkQRFhYKRFvbAPEKrU2nTSQTZtW3MeWAO37nAQqxil4QNnQy1AVq1T2v129OW42wYM6rgeJSD9GYr9y0GPfFczvxD4hCmkCA1oY35G3flMxOLHS4ZRgCkrrUiWlZIJ5agY/8AEDD1DyzJycVsEPD2JdkTSFE6UM363EAWO2AMotZpcHczaQffbFwydJhAmImYG88oMgC31xseFJ8yHcQdRJNuckkW9Mc+DegVnklsrrcScUypqldInSBIn9Of2wCgpE/i1WKm5AGkgg/zAH9OmGnEeDOzStYtH5CJMbCDpv6Ryxtw74YJINarA6KpE89zYfTA/TUdjVlj3YyyPEFqE+GeJZjRH4a5nWh/7qbKoI7c8A8V4mUktkSi/wCbKsPqy10HvGGzcLpU5K04IsDzvzJ6Df6YAzdJixUVawWBr0VDA6AqWuIOMTQ2PqCo1+IsSPDNWiDuqVnI9pOr6k74joZmu9Qa6lZ9hBd2tO1ycODwQvdSLWnmdvyyJ9sTHgjpT1AyQbqFJnvIPl9JJvjWkE8yZoaNNVUMjrPObG/fa2LAOBUFSVJDEToDDvAPa284rOSp+I4DyBsRqa0T1/TB2bNIHSjsJ2DAH6XB364lyQk6SbNUhhmcyaKaWkW2SG0z/wB1gT7YUf4qTTZFrP5oLL4aAGDMFlOokd8Q56q8A+MAAJUSB25HUI/e2PK3ETVAWrUIW3mkuRG5Asb9MMhCkEpUJazCQIkD2/riEKJuCPfBmcyQHmGqJs0b9DG4++FjEk72waQyM0wmrTBAGoyT1sB+s4nzHBqjlEoI1S26U2MxvsIN+eLL8DfAxzhNWqWWgpjykana0gbwt7n2GOz8NpUMrTWhSXTpAhAZPrJkk23OBeRRGxjaOM8N4G9SMsqtl9Jl1qKw1H+Zni0WMEAdJxdeA/8ADjLh1eqP4hpsoEUh30/m9TbsMdBPEUAGrSQRHInrcR0H2x4c7VZiKYphI3uWWRN7Rz68u+AtN6ZqjXgTv8H0AYXJZaOUUUH/ANcZhrFY75oz2piP/wCjjMFyXyFbPnniFJ5QMqweYJOk+v374DrcKY2CaiTKlBJba4vJH9cWT4m4hQYuHz6VBy0KzAe6qEP7vj34b4e7lno5jMZekRJq+HpUwLQ7VATPYHHo/RV0iB5JPsqS8LqBmUmINx8x+g29DGJKuTqal5x5QSgX3I39zix1+E06hctn1crOimpKtVPIDU2kbb3xWVz51BSAomwHbqcBLHx7Oc9aG+ZDbMzm3zDSVt6bC3fHtTLKkMdMx7nr1xHlcwxZwJeFNhzBsYB3scB1UBmBHYtf0PTANCF2eNxN6oFIaFRbKCWn3ME8+2Asxm3LFXI8to/0xpQoDULT/r0OC6tHSZ0lV3t/tjYwDcktA+XpVQdVJXRhsVLD9/YYeZPjtVARXR2MQXB8xvImdo5HvidakGSGJYCwB2teCAIxrmcqah8NCVJJaSANt++8WjBPHF9iHlvtaNv+ZdCALRNrBntPMnncnFcz/FqrzqYiTJH++H1b4cqBZd9Q/mJsP1P2wOvBKcyzPUTbUigCfUkk+2MjhS6NhkxrYJwTK1DdaQP+Yiw73ti7cFqDQJgwxW5Edr7fTGuX4eq0dKIWEWUn6i/PG+XIRywghgAV2Km423uO24GByNNUieeTm2E1VbUykppnzBIiNxsTOwm+GL0AAVC2G5AJ+tsJK2SZ6iFCVXVDNq22E6fTlhl8TVTRpstOrptOptyIk37noN8TuJt3SBeNZlaKjQV1H8uo3HOxv298a+OF069YI2B5iB3uRHY3M4pXCmarVLSSZBkkki/KcN/iUuzDXUuq28nQ7wP1xVHE3CgnGKnQ/wAlUptN1vsAR5RAuQTG/Qc8eZiojCNQGnkTNtpCgH+tsVLI10Yecaj8oBB9jPQfXBmS4EP+r4xCc1YcvW9vQYm+nT2O4JDrhWao6vDIDVlOuactIg2AIDBhzUk879JeJcSIOkBZYgaWbSbncT/r74myi0ZH4SA6YVwo2sRHP7dcb53iyI2o3CpYQIJJBJB7QOm+DmouhHL7tIqb5JCajEkvAAAMrPO5MkxbkMLqmQBqAEkKdjax9+WGlTi9MtJQEMLrGk7m5t3iIxEVRDeGReQJB2BAuINh1xi7KotrsjqZSm5kAqsdxq737398D8PK09RYyDYARG5gmxNuxBHfbBNJ6tVlIQKvL2t1GCH4QQSQh6mLgDsu/LHP4DUhXmaWrVDXj+aBhdQyZJtLEclBb9MO8hwfx6tOnSI8zXsZUD5mv0HLHa/havQy2nLsqURA0aRAYwSSW/mMD5jMnnhbyRg1F+R2ODasU/BVYZKkMmzFq+jxNBlRJJJCki8TERvPtbeE8MUDW5DVagl+ennCzcAHacE5/K21hFLCwJ80Ax9tp9MKHqVQgDvoYrdF03MXEmeh6YTJpPZWlaDM9mKcQ5UAGPMwv+l8RZNwQVpOpE2hl95vvin8N4DUqQuYdKaqdQiS08pM3IF57jDnhfDaVIBKQvcl2IJvPS3PbE/PYyvA/OTqfzU//n/THuAjTq8gCP33xmC5wO4v5OYZP4o4VTtQydRD1Wmhb/3Fifvhlxc5epQ8atls5pPy6iAzegL6veIwh4V8V5bJoPAySmqBeo7FjPUWEe2B6/x/ncwYB8JTuU8v/wAjJ++PoozpHjSkB53O6l8Ojl6lFDYsZdyByLESBP5VjvOFuWpkqQiAx1t9euDM3my8EsW0/mLEx6nacEcINIvDSQBO+5PNuZOFy+5iHkdNgGX4fq/EeVTkFF2jp274cUXoVUOt1eoQNKukkAf5iAWMd/8AXG2a4cjuSGZQQJDGQSNrEyBhNnqDK/mFluHiF9Iv2wt66M5Ka72WAcMpLVZUQFGTVvdZEiDvgf8Ag0ZSsMfVha3JQcEcKZqtOlVcaWEgQfmFtJN5iS0A4ko5Z0cmrWULHlUXbpOmL9Ma78E9tNpskWnddIGoL5epEXB/fPENfJMG8S5E/IoAg+p32Ai3LEGT4k3iM5UKL2sW7bHSB25Ym4fxJzVGv5LzbfvEnbl746/DM4Si7GhptVQqyQGEEbWI3g3B7Xwrp8EVHYaPDB+Vg47R5f8AWfbDscYowSrSB8zANC9ZtbGjZjK6tZekD/NqAMfXC4zpg/clRWfiJRS8q1KhZrn8QD7CDE+2HjZtFoIQgDMo0rMSY6mJ33OAs8uTq1lZYcz5m1HTF7X/AKYatQoZhwGJWBpBDCPl5AiLT1w+GOM1R2XLxSs18RjSUsQmkXhhP+3Q4r3xSddNdEFLE8ydxP3B98W5OBgDwwzsGBU+LYNYyAQL89p2IxUc5wCoahUUzvZgZWBuZ58rnocCvTVK0wsOeLewbL5dQAQStUCQbBdvue2GlWgamjUJLKRAEQIMEzyt98E8NyIos1UgQVgMee4kDdQcaJma86Xp+TfUFa/PePY2wyUuOjnJydoS5nhWikWpM+rc0mUEzsbb4E/jqyU1DeGFf8pud9rbH1xbM5UXMI1OHDwdNhAMSCGHLFLzOWZSTUVtTbzZjERJm+3McsLnBS2U+nyXakH0qql9QqG0SdQksbQCeV7+mDauY8HSKy3YgWc6Z+pG3XvywkpOKJ8ylqbj8u4B7xy36jEPE+LtMahVUrYNBC+w3PriaUHZTGNsK4iaaVTIZG5mx9LTzGNqVF6tg6Cb7wWsL6bnYc+uI6XBPGo+P/EAP+Zag0AAD8rTDbRAAwRwHN06Yh3QTbSx5b3O0k42ScVbDfWg3K0WSxdW7g3HphkmcA5+mFzVqBUlAVMybczzF5AwOtNlBIqHf8xBH0En74HjexPY64JU1ZlSLkEtcxcXk9QN+8YvlLMlqZC+ZwRAPSRN+e24xy3gnGloV9dWCAd1mP7jrI5Y7Jk63iIrLGlllGBkEQCDPvM4831kXyPS9KqibZXiCUacfw9UQdwBB7xMgR2wtqcXyb5gs1JjURYDAKWgkEr1jnifj2dalSE0w7GQBfseQm49BbFdyStmFNWnSpgU2GpQ0se6ypB9ST74neV/Ayc6dIu1VaVQAC07GPf9zgPgeUdKtQnRo/KUafUkcvqcV3iXwsuYUTUqU03IZtWo9Rz2wDTpUMnUK06rCbyxBH+/YfXBwae/IabOhjR+ZGnnpYx+uMxQv+cEW3jgxzmPS0YzBbNtFBzfDgi6gRP2+wwJSzq1BoUX5kAwMWHN5fVTXVA1CL77fY4VU8ilCPmAbe8ahfpytyx77lR87Cdr7uyTheRSsPDLwCZICkt9hC++LCuRy1CyUS9Tc+K5Pvop8vfFc4FxlaVS5bwzbmY7gYt61EYak0GdmgHCpZGt0Dlcov8AQoqVaZ87MqiYhabx0iykfU4j4jw+4TVpYmIBk8rmbewn2xtnuG5qs4L1YQGQQZ/+EfrgqvxH+IqoNUiisyFHmbaSdhEcvfHRm3GxdU00Lsln1ohKDBzBJ1RuZ5j+otiL/EFqZhtMSphfLe2/rfr0wLxPJuW8SoygjypFgd46me4w2yPC9KatGklR+b5muSeZBP77FV7GS4RXLyxZnHFSBVXzX2bY2sTJwbwt2osAlMkPaTqIXmWtvAwTksxTVy1Wm3i7liAAOUiSFFvfDZW8RdaHywb3vY7HnfmMEqrYqWRrVaFuequaQR4PitKqg0kfmMvJWwuTBN4vhZmEWrrWm5OlhJK2YgRpXaw779sNM7nCz0kRpKaixNlB06bnoJNucY84VUpUqToKiwPzSDM9Ou/19MZjpbClJqNpbPMnw+otJUqeCFBDNK6SB16E4dU6dNDfSoOy7km0GBMWBwhymZOYfUp0U6TWciWbvHIX3wyrVhTQl6iEmyvAWR7GJ9MG87QieJye2McvnDUqEyQqgaJaATMT7DtjfimdUKNIJYCRf22wmp5tAqU0OpjzGw9fvAxPkkhY8S4JEQLSZ3HeTgoZbVMXPEouwKuawQE6RpHmVlPqGAFib85xLluIVARrBPcLM/8Atn6YL4nWLUqgguSpBAu02iIuAQfa+FXDaOimirWfSTpYEKSpiSCfy2EXntgMkdlEKcQ9F8SoNDabQ/lmed+mw73wBxrKUkksZIifSdoHYHBecrGkqpTUQdlj5jP69ThBxfJMG1a11EEOBcDmF33P9McpOtGwjvZNm8sBSDrSHn26gWAMjaSfvviu5XKB3IYgNFovJHKbSe+GuVqsV0a9KR0nnb0AI2xE9A0X1OwKkcjz5W3xrXllMJNWrFdWidQUKwk2U8+97D749oZGlUZ6aB1qn/phmmTJlZEDbYkXvti0cOzyBWKqPMIV2uF3DHqCf6YrtVYqr4ZEgm8iD77RjKKITd0DZXNhDpqhgBImeYty3Fu+DRxHnT1HuLx7dMDZmkwQfMwBuN4MXI9Rz2MDY41pqRAQgA7yRbp6dMKlBobxTZaE+EdVBaz1FjbyU9ieW59JxY+C8Xq0BQptVpwo0GmZUhQp8OJvqER3G+POACoMvTWtq0suqwtJ2uNsNeMcFo10Er54s48pBjcnf2x5E8snLjM9SOGKjcRr4qM7O0VA6Qp1RYgSBzn0xpwvwqAenTUQ3mI2gX5neOhM43+F8rTpZdKLS0TMybkkm+w322wdnuFgKTSOlidz06YSlFvR3GjXMZdtJUKzrAIDAQD0k8xH7vir6KdVn8fKrTlY8TQCRFzG5EDmOWLnRkKFJgjnMd7Y9q5djDLpB/OCJkchO4PPBJpPR2zm9bL5ZSQlRSo2JBn38p+mMxZc3wEs7HxHEnbwwY9+eMxv9mcUcx+IeMBiqC2kkaQOXUt/QYhyXEWrQamlhThVERO9u9pv1AxpxPIGrm28M6kkQR8o6qDsYxYqPw2VVodQSymwBiJJAvvMX6Tj3YbjbPn5ShBJASZOkG0lQFmZ3tNgSOfffEDZqlTrLoBCgbAkg/ePXFqqOtKC2mNiTA+/9MeVs9lyCxVS0c7ahE9Jj0GAc1HsSpOXgDo5lXpBihg9bep9O+AcvVytIEHUkiZE/XULm9sb8Xz71AsECnYQixbp1I7TiLhuTZy0BSQDp2MdDtt2vhUZ2aoJICz3DjmFhaitpPkK7i1tQ6crYZ/DeZdqFQVpCJYvJtEEGB0scAVcjU8rBlViI0qApJPpvO+1sENQFOqgFgiDUNwzXAnaSTz7YdCddHTjyjTN/iSj4lBntoGknlJ5cuZI6YY0kfwFRXIRVAIA83t09b4By3DamYHhE6XgkAyfMLkfNF+RvEc8A5TOFTqqVGAC3AiQecg3kH9cZxdbBS+2k+hllsnQAddJeCJLGxJHMQBYYNpZFQ7AU08O2kALGmN+87wcDZ5lFNHoqfPe1tUiZMj3t/XEtPM1TTD+WWWemwAgdbXnD0+PZPLlJaYT4lBdSBQAbAARfoJAwt4nwkOEDJFVl1MRyO7dvpjbJ1vEpWYqRvaxkm9iLzg/KUmMoGUFRsW39Jt/vjIupW0bUl7Rfk+EUlSKhdfDhhqMAk3gxJJnoemCq+ZNSjopUiNRI1AaV7+YwzbkfTGZvNmpS0GnoqETLdZgnqPUfbEdHXKhTMAAHYEDfyi0TtY7+mMyY1J2are5dgOWyL02asIZhAkhoAsLRyjmTy74l+I6j0dL09LEjS6tafzSI2v+uDsjlauZZjKgA6RPlgjlpI7/ALtjM3QCwYWNmZQRtImOV+5wdWqYXP7rKwa9d6iNUUgBZABmbksRFo5R0wSGpuHqLpciJUfNBN273O2+HNZQ1UlJKinpEWAkxAPoPXEPw3QWjUbVOsmF2+W+wk4FJIb9RPbQKlNqbBgq6gCoDWlZBieRHptjTjVKnVI8OBVtJi/cTtzib4Kzmb8av4dNdYAvO073+hvgXPZGkAabAeKTupO45gfy2wxRvaOTp77Pcl8PU2mHK6hcltzy3tywkOX0PURhqZTMHmJHIW/pgweKD4asb8iv+3TngdMw11cXn55FuXcEY7Q+Dl8gugjUHlVbYLFu8T9caVKyzTEzpPl8sLvPmE89iAcFEpckNuRqLCBziwjAbqoadJ3gyD7mTgGh8W7Lzl/ivUoSqqjcKyC0ciBEEciLHDXgvF0caNQIUXOqf1/Yxz1q1OkIvVGsMlQeUAj8oBBOJ+G8XBdvKD4kAidMHu3frbHkZ/TVdI9jDnUkjruUz4mwiDft++uHVSpIHOMcjzedemyj8RGT5SQTHbUtmBHIz1xY+E8e/iCtXVcqA6mRq2uPQ9Mec8EltFMqZd0hoMardsTii3K5P7nC7KZ7yACJNxYEW32ufW+DspnpMHy9558xjIxXkU9AtWqoJDGCNwP7DGYPfK3MAkddWMwX0mZzRzXjdMinTVCEWfLHyrGwIAt/bAiZyoCqMQTzcITYDkJ3PXDrLU9S1KTXQrKwLq3KPXphbQqeIJA89MgMtvTb6Y9RZZJ0fJReipcWqBoZSzybs7GRysuwww+F83RYkMreIFiAJYcgRq5XB7YeL8HU6bvXzVUU6BPlSYN+TcgOwxI+Ry6Mr5VYWILavmHa1/U9NueHyhyjt0XUox2R5ykgT8Wqqr11Br8hGx/tiupxFEH4YL6ZIb5VvzJ3Jn8oBwTxer4iONRQKIki5HMyTzNvQYrtPiqU6SqzFmM+VRZR0k/mPXlgYRQMYJoOyNWpXrKszVa2o2CqNzG5w1zQXJjSfxC7AFjcqRdTJ25xG2Fvw/xqkKoC0QliNQ37XPIDl1wRxhMslQUtdRy5Uk6gdO89LfuMN/8AKRjg3LfRP8PfxRq+JBgPqBJIHMEW3tz3viwZ3h9OrVeo1MeYiV5TAE98TNXpoAqyRHP6Y9o5uZjbntAw60tEcm3I9p091t2AI9hva4GNqXBWqNCwI3PSe2JeG8NWrqeqwWnt0B7EnocMuJcTTLoFpusx5VgsTG5tc26m+NePlsbhxVuQTw3hSUFiztzJFvQdBjzM5enIZludtIM/b0xpkq9R0BkeYSJWIBiJBJM354JrAQNJnfUftA7YclWilxjWivf4U9StLqVQ6gDMkiCL8ouTgWhUplygKqwGlSCCSdlgbDeeW2LLVc6Ci7ERbfC+nQ8CmzaELAxIFzYRP09MclTsjyYG2CV+FIKMaiBOqf5z0O/ScK8nQZ/PtqMeY2C9e5BBMTaeeC14q1UCk2gEGfJ62nkNtowv4fQzAp1CFhBYavMYk7LPTGNiIwaszNGrSGmkKbhVkSWkm52iBc7d8Ls/xF6iqSVo1VX8QqoMzYHseWx3w2QpUqCnrAYjy9Cb73sO+FFTIhJqF10SYgFjbmJP26YCLvwUwTS2E5LLJTpHw3Ck3JaQwbnqPJefM7wMa5HKDWazOxMFVkHnpN7SDDbAW/SLKlWNWpqJhSxJAgk6QABOxF5xG9Zj+JTaGAhehn5gfUdjthqlQEoO/wDJBXClmDsURQW8wK6muAEtzPP9MJv4YhgBEkEmSb9gdv0wy4m7Mv4pLADUxO0zAO/374HyKM0BIUNYazF4kAe9owLlbKMdxiJ6xqqDSYkCZ6gkTzG/PESVYkm5t3539MMPNUZlBXVJFzz/AL4XV9SnSd5iJ2OFNlUXZvnq5YkadIsY9onscQLVamZW3LV1nuMaLXcDzAET0v6emIPGsRFicKnsbG10W3g3xBUYrRrDWpOmWOw5ekHpaCcWzhKeHTMQxUsV3iBf5o7xjlNB7xO5+mLPkM1VVQ4LBk3nZh3Gx9e+PPywp2j0sOS1TOpcHzKNZhocGSRFu/f1xZ2zVPylwL/mtB/djigNnAUVyo8QiQeo5wR+mJaGddqd5gggyPKI59sTWvKHtJnRSi9R9BjMcLzPGs/TdkRmCgmIaRe+7SefW22PcM4ftCdfsu/BMs7KWLSzbGIHpG3vhRnQmSqh6TEtUeXQiQtpL6t7RYbXxZc9UpUQaSvDMIC6iT7LyxVf8LVQTXq3MyGbftyGKHG8lo+Xxri9guer/wAUfHzLRTP/AE6Q3gfmPMz074np1ywkCALKvb/XAWazSa2p01HlAl+XoOQGG3BsqXIUQQPzbxjZW9D3bA+NZHxqRVgVAEyCCbbDCb4R+FEzNUM6OaS76pAPbUIk9Yx1Xh3w8i3YhhG0b+vbtgjiBWhTOlflUkIoiAOQAxT6aDXuKsUHFbKbV+FMhrNGklWlUj50DsCOY1NKg3jHlX4F0FDScEpGkuB7/KL264tdOnWeAXCaosgupP5ZM9d7YY5ThTPRQCq1EE3JB1sBuQW2J/mINsV5MkIBfTcyt8TXNNSELTohN9UEHuOf1wg/h1s5eWe0rETF4jrPTHVqvDqRVfEY7dRHuL4Br/D+WVSFZVnnpUwYImDiZ+qgk9Ay9FKT7KTVf8JfEq+EgYC13YclXko6wJxC/FRThctQAJPztdjO2/XBT/AVSo2v+IJVDcAWIvsCYA/d8WOn8LaSmnSqg+YrdhIgEk2ECetzjI+pUo2bL0s4ulsT0jXWiorMDUN2jYHp7dcESbAmxGGj5JFIUszoBcgSYFrC/wBz1xpnuHhZKNKAxv5h1BHrijF6vFPSYU/TzirAlTlJ9ovjbSYIEamEAbD99xj1VHMxAxmYpPpDKfMLgH8w6dsUMnKd8RZBqRZgp0NMaAPKY587nn+mN8vnE0lSB4hu2ptrwAeZJO/TD7P8XRLVABIBhxvJiw5wRcDqDiocUyR1/gOGLHV3g+bb2/XAUlsRKCs84xkK2p9AAVlvoW4MHyiWMbb4W5BqhRTUMBRZjcASfywCCes/UYNzebqVGZNYjTpaLAnmT0wqpZxnbw6hkRaCI2tPXl6YB1doJXQxyLU4ClWuCN9tyCBbbp3xBk1g32m94Inb9MeO11WQLXj6x2wPxY6V1CdR/ZjrgbMq9EWfY6gqWDEyNwB8xPOOuAKuc1fMBfv/AEGNaWbOkiBfcxc9ATzGAnQlrnfAyY6OOuzWq/nkG+8k/fviPxJO/mnf9TgmpTmxA1dunLED0h788AxyoiCljB/XGVKIvv2ONnpEbCcQ1q5AgD1OBaCX6NVlCCRIGH+Q+IWVgFkCbD9RfFYq1GNyZxJlq2kg9DOFTgmtlEJOJ2fh+XrZimhaisDZtcW9IJw9yVJtSqGZIMEQDP8AbvGKz8I1KwPkP4bgRqJt6Ryv3GLdlnLAhbHkedvXvOPIy90j0ot0Nk4ahHyD6r/pjMLhxCLMfMLHGYn5R+GbxZyPhv8AGhv4iqKg1CTUYDb0OwxJVzTfxA8QlwfzEbTsF29zGOg8ayKIrPWL1AdlBgW6nYDviqZfheYzlda0+Dl1gBmU3UXMDdievaT0x9LkWLHt6PmcUcmV+0Y0OHamTylVJ0nYlicXPIcEo0z5Ev1Jn+2BuB0EZjVFqa+VNQhiRYk/WAIHPD/LOHcogLNubbDudh/W+FY3GrRbj9K4+49Vwo9MDtkw+nWWV6hsFN1UbTG07+8YFzOYqlzSai6ifKQpIPckCMNspkwhD1iQN1BPvcC1u87nE0/UylPjHSLY4opWwilwKmhV9TFhsJ3PU9cRZyuWqFdWrTvvb9z98MKVQM+oGQRt9P8AfEVWvSVtKAFmPmAG+CnHlHs6OmR1Ms7wonSRdtoItG8+46YGr5KozEGgCvXWsWiLETynbf64Z57PGnTLhdREeUHe8YWZDNVMw5bZVOwNhHcbmcJkorXyam3s2/gQ1OpTUGkWHzN5787XEe+EIqVcrV01NbUyLuJYdiSLwWJF+nIRi1ZqhzU+a9pMEnecVjP1s4NXhUi1NU1NqsTYk0wBJYzbvETgZwapUdfkJy4AcuGJDBmPQsZiBygchjKtNiS9I3BugiGMenzWjvOFnCOMHN0/+maTNOykqD+Zv8pPy3k7wMWn4dIFPTcOBBJvqjnPafthcIuUqO5aOb/FHFmU04Xy1pItpI0mGS3tv33xp8LV2qJVR3cqj/h6iSwUjYkX3HPBPxmUGYbLmmVSoxKmLBoOlh31QOmliIxVeH558jXEjUlSmFYbQ07gxcDafXHpek9VK+E2R5cSbtFvz/DSRKfiAAnwn2ad/Mbg9OmKvwpdJMhlCGDe4sCEP+WSb98WxamsKdTJzU7i4wj+IOF5nxCacO79NtOmDPeSMepJVsgmhbV4dTq5eVQmsjxUpggm5jUwFyO3KMV5ckdbQNOk2BENFpF4E3mOmDsqzUa0lWVwAGAJBXt72+mCs7qqlSuqowEMxH9drdThEpJK2zoqV0hXns2V1c2NhFrYhpVRVQTqUoPlH5p/Q9+g2xLW+HMw7Lo8zmwWDy9vvgZ/GoKyVqZpNG5Ugt0ubQe2FQyxl0x8sMorrYHnKLAa1WFBi5BIPt+7YDXMkEHeMSVCxNgTNoA1T9OePMzkKikA03uJEow39sY5Kw4xfkIWqrXA83UY14hHlEQQMDpVemQroVYdRpP0OPSZvqvtjEZxpmviN095x4aVsbO9sQVKwJFsaEgZ6GN8pkqlV9FNdTQTAIFhubmMT6CxgRO+Ot/DXDspRyiAOhZxLOVAljyk37b8jibPmWNWU4YOboz4MoVaOUSnUUq9NrA3DAmdMiQImN8O8/xVaMmohCn8wvHcxy69OeBuF5hm0KwVQCUufmjlH378sHZmh+HoKsAPl81+YHO/rjyJPlK2ejFUqIstxGVBVxBFrT9xY4zFL/wqshKguBJMBDFyTyI64zDeEfk7k/guuRpalNObk6nNS7doE22O+3LA+Zr1mqquV0MBZnqbDkYB5d9zi25ng5ZjK/hsIkWjtyPvgb/lqkjDxKh1m60xseXrHfCuc8srkgYuEVSF1DL+JVpqaurRsiCF1fmqPFiAJhf1O1qywpJ+HSgcz1buTz/oPsPwvhNOkhuWduv6wOXbsMGZigguUJP6Dv8A6YvUmoipU2SGkCP0B2+mIzoIis0gdbd5EdMatVsJIGrlGI6lE32LaTvsO/8ATC+Tb6Oo3pZlY0oDYeaLQCDF/pjbhdK83blqMXPM7XOF75vSD0jkLzIAWOv9sNMirKg1W9e+2HQk2ZJUgiqmrylfKbEYny+XVAFRQoHIDAy1PML29PXEjZmOW/Lth6S7FOwHjWaFJdV5JgDqcQZXOFaRLtLQdxB+g+ntgL4tOpFKmApk2MnoAeRn7es40o5f8DUTM2v78xhLn9zQxR+0TjOnLoKILecs5cndiSTAm1+WDKXEXpONSmWEyJiREgwLA9TtfthNxFTCSwKg6RyN7SOvK+LFlKpCg9FEj9+9sQuX30mN4pISf8S6fiUqLgyrMRMDUrSpCi1wfNbHOOI8MqVaS1AdTAX1G6kAtAndSII7yL46V8T5WrmvCpooWkrSVmL82J522A63xReMUvAq+CragaetuViWgRJuFt/5ct8MUvuJZxp2Xb4WqJmcpTqCA2nSyiwDAQQB98EVspoptUJYlQZj+XobjljmaZk0ak0nK6k1wZAkWB5aW/UY6RkM875IvXUhwhDLsW79AWx6uPPKUaAeKN2KaHw2NWojSGM6XGotaZJHOLQcFHh70TIUKGuFEQD0P+uCM1nClMFZRwoLI1xG0Gf98FOToDkADcgmQPeNu+Ic+JyVIrxtJ9EHDUZXao7AaRAHrv6csMM3TgN4gV0N9O8HnHaeWAKFTxWPmAECCpBvPP0A++N61ZGP4hIIgE8iesYmUOKqX9DWrdkv8Quk6VAMWsALWEchH9MJqiAgqo1sOY+5Pf0wRXBX5WDAkEa7C5/vifIZZJZlOmeXK3TC3GRi4/AgzfA0zeqnXUmoL073I5hW/mH8p3HXFG4x8GZmlJpK1WmDBgQV9Rjoz5+WQWmSbHoRscT5SuKldlKgO4+YyA1og9T0J3w3D6mUNMXkwRkrRx3/AJfzZMeEflLbi4G8YWuhVoIKkbg2x2LN8KrhgG1QLDSADffcX++MTg1CppV3DxMalFv8pAv74fH13yhMvTLwzl/w0P8A8hTp1C8r1EX2I5Y6FnkUlVCA0WaF8OAUMWldjeb73xpW+G6VOpqVPDA20/Lv1Jn2IwHmM29NtC+UE3EAg8t4gThWXJ9WVodih9OOxnleIpVoPaTTfTuQd4U2uD/th3S4dmkXyOHpkFlDOSw6xIuO2+KZwjgh1+aoyz/LzjYE7Y6JlqjqqydCHYEyV5fQ+uBcF0HyZVzx0r5alnFiCjzjMPKj1pMVHjtVSPab49xyijbZcs1nTRVix2gTcgG203574gy7F/Mee7npyA9ifvjXiFdXqigoLmNTGLC8AepvA7E4YZkrRotIkxAHSRG/1vhbx8ZNJ6Qu0l+xLwvNE16gIj+WLiL/AJv1w7y7q0MwJboftbFV4OXd2Ai1vKDPKbzh6EIMXLAQWmy/6thWOc1vwMlFDFkiWPzHv7DAtYaadTzeZhv+gGCRUBC9YI+mIc3RGssxhUgmesbdLQD7Y9HtWhN1pgfGc9TySU2ZQalRxTB6at78gI3w9q0wLDcC0/QYV8QSnV0MyioikVF5y8ysdNt8MUrBrXB5kcrD/X7YZCloW77BlzADFT9cBZ7jlAPoaqoYjadtvvfAfxLmAIRWM/cn1wo4RwKH8R/MeZPMdOu+FTzNS4RQ2MFVsf59PFouUMhV2HOb/v0xDwzOtTolWSQLjTzm0Ab7kYacOpCm7BbAi+AuMU2TyoBI+U+837b413XPyYnuir8UyRarS8wBDXHK233n6Yk4Xn9QcNCEEjvY3P05+uEfxNxCvRpISfCdm+UG5IHzW2BJ+2EvDM+/iAt8x8xg3Nt45TiB432E8iTo6XlUBSRMbRt2/fTFS45wR3zjVaB+RIJJ5yQ0bzEgRz2xZcvmAlMF2WGA57f1nBAeiumuRdiV3gddUW6DvjoN9HTXI538P8Apv4ys4NUtBQ30JqkgRvMRqG21jhhxziL0CAXVbgKpIJIBsTAt/fGnGIbOLUVSp1RqRoMFbXG39dueHXEeECpUV6qJUBcsPLMSoFzvYhcXL1ijFKhKxsT0+NB4FRQdC6idWnU1zeYkX2xYFFQohR1/EHtB5KB2O+Kv8QoqMxFNUTogiAY7kGL3EGCJw0yORJoSlQ22gmJt+XYfTAP1S7kMivCGGWyNWmopH8xJXSNv6ncWxpXmnWXXBvEkXAj77dMa8OzMUHZ9Rr0yAwPIAiCOxG59cPOI5QsysoUkDciY9ueMyxbjyixkZVpiN83SOoeUCd2/Mdtx7R+mIWyNOdQd5vAEkek/64PzuSUMVqKssQZUAAEciTO9sCUEbL1WIBak1mp7wOo5SOmIIZbdPQyjRcipYPpCsOYBEC0z+7YMGURFFV1DCZIAJvysDaDeRtiPL5ga5BJgSZmRNo2w7oTDLEjnae2Ec5TyKITpK0R5SsWT8UAHWVY9phX9IM+xxFxPgqPKuswd/wC4vGGHEcoFIj8o9B6f3wXTRTdpPLeIxZHH9zg+xV65IrNLhekSGMTcWM++FXEOE031IyjzG1wD/fF3zeQXRqQERZh16HvhPm6AOkQCdxO4/Z6YTmeTDKmHBqQkocHSigIgxEgm/rbffpiY5MVVJRiDzEyL3F+hw3WWgMon99cecPyRpGVcm5Olr/QcvYY3HlcnZjVFRY1k8suI5SLfXGYvLFDdqTTzhcZinZnNfA04aB4v/if1xDxZQagkT5efq2PcZg5dMWvcL+HqFdtIjz8rflGLAFGnbGYzAr8YT7B6Y/FH75nAfxZ/6Op/3H9ceYzFGH8QufuPeGsfDyl91M9/IcOaPy/XGYzDoe1AS7KtxX/1NIcvNb6Ycx5h7frjMZiaP5WNl7US1j+Mno39MacZNx6f64zGYoXTA8o558V0VIqsVBYRBIEj5TY8r4rHBbZ2jHT+jYzGYkfTBn7johpj+JVYGmNotu0WwN8W1Dq0yYFKmQJt89QbemPcZieHtkOE9FR/EU7fkf8A+2Ltl/8AoL/2/wBBjMZjP+psSuccEiDe3/2IwF8DMTIO2hLfXGYzAP8AGCveecUEVQRaQAY5iDb7YtVRj4a3/lxmMxZ6f8TDl7jzPqCxBAINNrH/AMcK8oJp0pvZD9xjMZjzM3n+w12MAg8FrC+r+uGHCD8mMxmC9H+aBmT2s24ofxH9BgHLn8N+xt2xmMxdl/Odj9g+y2/77YS59RLW2j9cZjMd/wAh7EBj7ZrU+U/X7DG9YeQ+2MxmJcP40MfYRQY6R6Y8xmMxehR//9k="
+                            class="w-28 h-20 rounded-lg object-cover">
+                        <div>
+                            <h4 class="font-semibold">Kali Bawi/ Kaca</h4>
+                            <p class="text-sm">adalah destinasi wisata alam berupa sungai jernih di Kampung Bawi, Kabupaten Maybrat, terkenal dengan keindahan alamnya yang bagai surga tersembunyi, airnya yang bening dan biru, serta bebatuan licin yang memerlukan kehati-hatian saat berkunjung, meski aksesnya cukup menantang dari Kota Sorong. </p>
+                            <div class="rating">
+                                <span data-value="1">★</span>
+                                <span data-value="2">★</span>
+                                <span data-value="3">★</span>
+                                <span data-value="4">★</span>
+                                <span data-value="5">★</span>
+                                </div>
+                                <p id="rating-value"></p>
+
+                            <a href="https://maps.app.goo.gl/nTz7EXQ8ncXuudu48"
+                            target="_blank" class="text-sm text-blue-600">📍 Google Maps</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+        </section>
+
+        <!-- ================= TEMINABUAN ================= -->
+                <section class="grid md:grid-cols-2 gap-10 items-center">
+                    <div>
+                        <h2 class="text-3xl font-bold text-primary mb-3">Teminabuan</h2>
+                        <p class="mb-4">
+                              Ibu kota Sorong Selatan dengan wisata alam dan air terjun yang indah.
+                        </p>
+
+                        <div class="space-y-6">
+                            <div class="flex gap-4">
+                                 <img src="data:image/jpeg;base64,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"
+                                class="w-28 h-20 rounded-lg object-cover">
+                                <div>
+                                    <h4 class="font-semibold">Air Terjun Sesna</h4>
+                                    <p class="text-sm">Sorong Selatan, Papua Barat, adalah surga tersembunyi yang alami, dicirikan oleh aliran air lembut mirip tirai dari tebing kehijauan 
+                                    dengan tinggi sekitar 20-30 meter, dikelilingi hutan tropis lebat, dan memiliki kolam jernih di bawahnya</p>
+                                    <div class="rating">
+                                    <span data-value="1">★</span>
+                                    <span data-value="2">★</span>
+                                    <span data-value="3">★</span>
+                                    <span data-value="4">★</span>
+                                    <span data-value="5">★</span>
+                                    </div>
+                                    <p id="rating-value"></p>
+
+                                    <a href="https://maps.app.goo.gl/bquZYnmpPyMqQYn69"
+                                    target="_blank" class="text-sm text-blue-600">📍 Google Maps</a>
+                                </div>
+                            </div>
+
+
+                            <div class="flex gap-4">
+                        <img src="https://pariwisatasorong.wordpress.com/wp-content/uploads/2017/11/kali_kohoin1.jpg?w=640"
+                            class="w-28 h-20 rounded-lg object-cover">
+                        <div>
+                            <h4 class="font-semibold">Air Terjun Khoin</h4>
+                            <p class="text-sm">surga tersembunyi yang menawarkan keindahan alam alami dengan air jernih kehijauan, dikelilingi hutan tropis lebat, menjadikannya petualangan seru meski aksesnya menantang lewat jalan setapak licin dan menyeberangi sungai deras.</p>
+                            <div class="rating">
+                                <span data-value="1">★</span>
+                                <span data-value="2">★</span>
+                                <span data-value="3">★</span>
+                                <span data-value="4">★</span>
+                                <span data-value="5">★</span>
+                                </div>
+                                <p id="rating-value"></p>
+
+                            <a href="https://maps.app.goo.gl/LJ5jNWCFVZ9xPUsb7"
+                            target="_blank" class="text-sm text-blue-600">📍 Google Maps</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                     <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsQuCqfq2VaPvATqccutSxGHDFzPaU14cD-A&s"
+                    class="rounded-2xl shadow-xl w-full h-[380px] object-cover">
+                </section>
+                </main>                       
+
+    <!-- About Section -->
+    <section id="tentang" class="bg-gray-100 py-16">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold text-primary text-center mb-12">Tentang Papua Barat Daya</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-8 rounded-2xl shadow-lg">
+                        <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mb-6">
+                            <i class="fas fa-map-marked-alt text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-dark mb-4">Lokasi Strategis</h3>
+                        <p class="text-gray-700">Papua Barat Daya merupakan provinsi baru yang terbentuk pada tahun 2022, dengan Sorong sebagai ibu kotanya. Wilayah ini mencakup kabupaten-kabupaten yang kaya akan sumber daya alam dan keindahan alam yang masih alami.</p>
+                    </div>
+                    
+                    <div class="bg-white p-8 rounded-2xl shadow-lg">
+                        <div class="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mb-6">
+                            <i class="fas fa-leaf text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-dark mb-4">Keanekaragaman Hayati</h3>
+                        <p class="text-gray-700">Papua Barat Daya memiliki keanekaragaman hayati yang luar biasa, baik di darat maupun di laut. Raja Ampat sendiri dikenal sebagai pusat keanekaragaman hayati laut tertinggi di dunia dengan lebih dari 1.500 spesies ikan dan 550 spesies karang.</p>
+                    </div>
+                </div>
+                
+                <div class="mt-12 text-center">
+                    <h3 class="text-2xl font-bold text-primary mb-6">Tips Berwisata di Papua Barat Daya</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <i class="fas fa-sun text-accent text-2xl mb-4"></i>
+                            <h4 class="font-bold text-dark mb-2">Musim Terbaik</h4>
+                            <p class="text-gray-600 text-sm">Kunjungi pada bulan April-Oktober saat musim kemarau untuk cuaca yang lebih cerah.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <i class="fas fa-user-shield text-accent text-2xl mb-4"></i>
+                            <h4 class="font-bold text-dark mb-2">Persiapan Kesehatan</h4>
+                            <p class="text-gray-600 text-sm">Bawa obat-obatan pribadi dan lakukan vaksinasi yang diperlukan sebelum berkunjung.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-md">
+                            <i class="fas fa-hands-helping text-accent text-2xl mb-4"></i>
+                            <h4 class="font-bold text-dark mb-2">Hormati Budaya Lokal</h4>
+                            <p class="text-gray-600 text-sm">Pelajari dan hormati adat istiadat setempat selama kunjungan Anda.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact & Footer -->
+    <footer id="kontak" class="bg-dark text-white pt-12 pb-8">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Kontak Kami</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-start">
+                            <i class="fas fa-map-marker-alt text-secondary mt-1 mr-3"></i>
+                            <p>Jl. Merdeka No. 123, Sorong<br>Papua Barat Daya, Indonesia</p>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-phone text-secondary mr-3"></i>
+                            <p>+62 823 9702 2186</p>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-envelope text-secondary mr-3"></i>
+                            <p>info@wisatapapuabaratdaya.id</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Destinasi Populer</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#destinasi" class="text-gray-300 hover:text-white transition-colors duration-300">Sorong</a></li>
+                        <li><a href="#destinasi" class="text-gray-300 hover:text-white transition-colors duration-300">Raja Ampat</a></li>
+                        <li><a href="#destinasi" class="text-gray-300 hover:text-white transition-colors duration-300">Maybrat</a></li>
+                        <li><a href="#destinasi" class="text-gray-300 hover:text-white transition-colors duration-300">Teminabuan</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-xl font-bold mb-4">Booking WhatsApp</h3>
+
+                    <p class="text-gray-300 text-sm mb-4">
+                        Hubungi kami untuk informasi selanjutnya. 
+                    </p>
+
+                    <a
+                        href="https://wa.me/082397022186?text=Halo,%20saya%20ingin%20bertanya%20tentang%20wisata%20Papua%20Barat%20Daya"
+                        target="_blank"
+                        class="inline-flex items-center bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-3 rounded-full transition-all duration-300"
+                    >
+                        <i class="fab fa-whatsapp text-xl mr-3"></i>
+                        Chat via WhatsApp
+                    </a>
+                </div>
+
+                    <p class="mt-6 text-gray-300 text-sm"></p>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 pt-6 text-center">
+                <p class="text-gray-400">© 2025 Wisata Papua Barat Daya. Semua hak dilindungi.</p>
+                <p class="text-gray-500 text-sm mt-2">Website ini dibuat untuk mempromosikan keindahan alam dan budaya Papua Barat Daya.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- WhatsApp Booking Modal -->
+    <div id="bookingModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 animate-slide-up">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-primary">Booking via WhatsApp</h3>
+                <button id="closeModal" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+            </div>
+            
+            <div class="mb-6">
+                <p class="text-gray-700 mb-4">Anda akan melakukan booking untuk:</p>
+                <div class="bg-gray-100 p-4 rounded-lg">
+                    <h4 id="destinationName" class="font-bold text-lg text-dark"></h4>
+                    <p id="destinationLocation" class="text-gray-600 text-sm mt-1"></p>
+                </div>
+            </div>
+            
+            <form id="bookingForm" class="space-y-4">
+                <div>
+                    <label for="name" class="block text-gray-700 mb-2">Nama Lengkap</label>
+                    <input type="text" id="name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                </div>
+                
+                <div>
+                    <label for="phone" class="block text-gray-700 mb-2">Nomor WhatsApp</label>
+                    <input type="tel" id="phone" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="+62">
+                </div>
+                
+                <div>
+                    <label for="date" class="block text-gray-700 mb-2">Tanggal Kunjungan</label>
+                    <input type="date" id="date" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                </div>
+                
+                <div>
+                    <label for="visitors" class="block text-gray-700 mb-2">Jumlah Pengunjung</label>
+                    <select id="visitors" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+                        <option value="1">1 orang</option>
+                        <option value="2">2 orang</option>
+                        <option value="3-5">3-5 orang</option>
+                        <option value="6-10">6-10 orang</option>
+                        <option value="10+">Lebih dari 10 orang</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-lg transition-colors duration-300 flex items-center justify-center">
+                    <i class="fab fa-whatsapp mr-2"></i> Kirim ke WhatsApp
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Data destinasi wisata
+        const destinationsData = {
+            "sorong": {
+                "name": "Sorong",
+                "description": "Kota Gerbang Papua Barat Daya",
+                "attractions": [
+                    {
+                        "name": "Pantai Tanjung Kasuari",
+                        "location": "Jl. Tanjung Kasuari, Sorong",
+                        "description": "Pantai dengan pasir putih yang memanjang dan air laut yang jernih."
+                    },
+                    {
+                        "name": "Taman Wisata Alam Sorong",
+                        "location": "Kawasan Hutan Kota, Sorong",
+                        "description": "Kawasan konservasi dengan berbagai flora dan fauna endemik Papua."
+                    },
+                    {
+                        "name": "Pulau Doom",
+                        "location": "Perairan Teluk Sorong, Papua Barat Daya",
+                        "description": "Pulau kecil bersejarah dengan bangunan kolonial Belanda yang masih terawat."
+                    }
+                ]
+            },
+            "raja-ampat": {
+                "name": "Raja Ampat",
+                "description": "Surga Bawah Laut Dunia",
+                "attractions": [
+                    {
+                        "name": "Wayag Islands",
+                        "location": "Kepulauan Wayag, Raja Ampat",
+                        "description": "Gugusan pulau karst dengan pemandangan yang memukau dari puncak bukit."
+                    },
+                    {
+                        "name": "Piaynemo",
+                        "location": "Pulau Piaynemo, Raja Ampat",
+                        "description": "Spot ikonik Raja Ampat dengan pemandangan pulau-pulau kecil yang tersebar di laut."
+                    },
+                    {
+                        "name": "Arborek Village",
+                        "location": "Pulau Arborek, Raja Ampat",
+                        "description": "Desa kecil yang terkenal dengan keramahan penduduknya dan keindahan bawah laut."
+                    },
+                    {
+                        "name": "Manta Sandy",
+                        "location": "Perairan Arborek, Raja Ampat",
+                        "description": "Spot snorkeling dan diving terkenal untuk berenang bersama ikan pari manta."
+                    }
+                ]
+            },
+            "maybrat": {
+                "name": "Maybrat",
+                "description": "Pegunungan dan Budaya Tradisional",
+                "attractions": [
+                    {
+                        "name": "Gunung Kwoka",
+                        "location": "Kecamatan Ayamaru, Maybrat",
+                        "description": "Gunung dengan pemandangan spektakuler dan jalur pendakian yang menantang."
+                    },
+                    {
+                        "name": "Danau Ayamaru",
+                        "location": "Kawasan Ayamaru, Maybrat",
+                        "description": "Danau yang dikelilingi oleh hutan tropis dengan air yang jernih."
+                    },
+                    {
+                        "name": "Kampung Suku Maybrat",
+                        "location": "Desa Aifat, Maybrat",
+                        "description": "Pengalaman budaya langsung dengan masyarakat Suku Maybrat."
+                    }
+                ]
+            },
+            "teminabuan": {
+                "name": "Teminabuan",
+                "description": "Pesona Sungai dan Hutan Tropis",
+                "attractions": [
+                    {
+                        "name": "Sungai Kais",
+                        "location": "Kecamatan Kais, Teminabuan",
+                        "description": "Sungai dengan air yang jernih dan dikelilingi hutan tropis yang lebat."
+                    },
+                    {
+                        "name": "Air Terjun Wermit",
+                        "location": "Desa Wermit, Teminabuan",
+                        "description": "Air terjun dengan ketinggian sekitar 45 meter yang jatuh ke kolam alami."
+                    },
+                    {
+                        "name": "Perkebunan Kelapa Sawit Teminabuan",
+                        "location": "Kawasan perkebunan, Teminabuan",
+                        "description": "Perkebunan kelapa sawit yang luas dengan pemandangan barisan pohon yang tertata rapi."
+                    },
+                    {
+                        "name": "Bukit Panorama Teminabuan",
+                        "location": "Puncak bukit, Teminabuan",
+                        "description": "Bukit yang menawarkan pemandangan 360 derajat kota Teminabuan dan sekitarnya."
+                    }
+                ]
+            }
+        };
+
+        // Smooth scrolling for navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if(targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if(targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // Booking functionality
+        const bookingModal = document.getElementById('bookingModal');
+        const closeModal = document.getElementById('closeModal');
+        const bookingForm = document.getElementById('bookingForm');
+        const destinationName = document.getElementById('destinationName');
+        const destinationLocation = document.getElementById('destinationLocation');
+        let currentDestination = '';
+
+        // Setup booking buttons
+        document.querySelectorAll('.booking-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                currentDestination = this.getAttribute('data-destination');
+                
+                // Find location from button's parent section
+                const locationElement = this.closest('.pb-6').querySelector('.fa-map-marker-alt').parentElement;
+                const location = locationElement ? locationElement.textContent.trim() : 'Papua Barat Daya';
+                
+                destinationName.textContent = currentDestination;
+                destinationLocation.textContent = location;
+                
+                bookingModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        // Close modal
+        closeModal.addEventListener('click', function() {
+            bookingModal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        });
+
+        // Close modal when clicking outside
+        bookingModal.addEventListener('click', function(e) {
+            if(e.target === bookingModal) {
+                bookingModal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+        });
+
+        // Handle form submission
+        bookingForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const date = document.getElementById('date').value;
+            const visitors = document.getElementById('visitors').value;
+            
+            // Format date
+            const formattedDate = new Date(date).toLocaleDateString('id-ID', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            
+            // Create WhatsApp message
+            const message = `Halo, saya ingin melakukan booking wisata dengan detail berikut:%0A%0A` +
+                           `Nama: ${name}%0A` +
+                           `Destinasi: ${currentDestination}%0A` +
+                           `Tanggal Kunjungan: ${formattedDate}%0A` +
+                           `Jumlah Pengunjung: ${visitors} orang%0A` +
+                           `Nomor Telepon: ${phone}%0A%0A` +
+                           `Mohon informasi lebih lanjut mengenai paket wisata dan harga. Terima kasih.`;
+            
+            // Open WhatsApp
+            const whatsappUrl = `https://wa.me/6282397022186?text=${message}`;
+            window.open(whatsappUrl, '_blank');
+            
+            // Reset form and close modal
+            bookingForm.reset();
+            bookingModal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            
+            // Show success message
+            alert('Anda akan diarahkan ke WhatsApp untuk melanjutkan booking. Pastikan nomor WhatsApp Anda aktif.');
+        });
+
+        // Set minimum date to today
+        const dateInput = document.getElementById('date');
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.min = today;
+
+        // Add scroll animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('animate-fade-in');
+                }
+            });
+        }, observerOptions);
+
+        // Observe destination sections
+        document.querySelectorAll('.destination-section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Mobile menu toggle (if needed in future)
+        // Currently not needed as we have simple navigation
+        
+
+
+        
+            document.getElementById("bookingForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+
+            const name = document.getElementById("name").value;
+            const phone = document.getElementById("phone").value;
+            const date = document.getElementById("date").value;
+            const visitors = document.getElementById("visitors").value;
+
+            const message =
+                "Halo, saya ingin booking:\n" +
+                "Nama: " + name + "\n" +
+                "No WhatsApp: " + phone + "\n" +
+                "Tanggal Kunjungan: " + date + "\n" +
+                "Jumlah Pengunjung: " + visitors;
+
+            const waNumber = "6282397022186"; // NOMOR TUJUAN
+            const waUrl = "https://wa.me/" + waNumber + "?text=" + encodeURIComponent(message);
+
+            window.location.href = waUrl;
+            });
+            
+            
+            const stars = document.querySelectorAll(".rating span");
+            const ratingValue = document.getElementById("rating-value");
+
+            stars.forEach((star, index) => {
+                star.addEventListener("click", () => {
+                stars.forEach((s, i) => {
+                    s.classList.toggle("active", i <= index);
+                });
+                ratingValue.textContent = "Rating: " + (index + 1);
+                });
+            });
+
+    </script>
+</body>
+</html>
